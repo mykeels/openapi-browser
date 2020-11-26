@@ -38,15 +38,15 @@
   }
 
   </style>
-  <link href="/swagger-editor/swagger-editor.css" rel="stylesheet">
-  <link rel="icon" type="image/png" href="/swagger-editor/favicon-32x32.png" sizes="32x32" />
-  <link rel="icon" type="image/png" href="/swagger-editor/favicon-16x16.png" sizes="16x16" />
+  <link href="/swagger-ui/swagger-ui.css" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/swagger-ui/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/swagger-ui/favicon-16x16.png" sizes="16x16" />
 </head>
 
 <body>
-  <div id="swagger-editor"></div>
-  <script src="/swagger-editor/swagger-editor-bundle.js"> </script>
-  <script src="/swagger-editor/swagger-editor-standalone-preset.js"> </script>
+  <div id="swagger-ui"></div>
+  <script src="/swagger-ui/swagger-ui-bundle.js"> </script>
+  <script src="/swagger-ui/swagger-ui-standalone-preset.js"> </script>
   <script>
   // Adding events to save modifications to a backend
   function getParameterByName(name, url) {
@@ -59,41 +59,12 @@
     if (!results[2]) return '';
     return decodeURIComponent(results[2].replace(/\+/g, " "));
   }
-  const SpecUpdateListenerPlugin = function() {
-    return {
-      statePlugins: {
-        spec: {
-          wrapActions: {
-            updateSpec: function(oriAction) {
-              return function(spec) {
-                var url = getParameterByName('url');
-                var xhr = new XMLHttpRequest();
-
-                if(url) {
-                  xhr.open('PUT', url, true);
-                  xhr.send(spec);
-                  if (![0,200].includes(xhr.status)) {
-                    console.log( xhr.status + ': ' + xhr.statusText );
-                  }
-                }
-                return oriAction(spec);
-              };
-            }
-          }
-        }
-      }
-    }
-  }
   window.onload = function() { 
     // Build a system
-    const editor = SwaggerEditorBundle({
-      dom_id: '#swagger-editor',
-      layout: 'StandaloneLayout',
-      presets: [
-        SwaggerEditorStandalonePreset
-      ],
+    const editor = SwaggerUIBundle({
+      dom_id: '#swagger-ui',
       plugins: [
-        SpecUpdateListenerPlugin
+        
       ]
     });
     // force default url if it was not specified
@@ -102,6 +73,16 @@
       window.location.replace(`${window.location.href}?url=/oas/spec`)
     }
     window.editor = editor;
+
+    setTimeout(() => {
+      const ws = new WebSocket(`ws://${location.hostname}:${location.port}/hot-reload`.replace("127.0.0.1", "localhost"));
+      ws.onopen = () => {
+        ws.send("hello");
+      }
+      ws.onmessage = () => {
+        window.location.href = "";
+      };
+    }, 1000);
   }
   </script>
 

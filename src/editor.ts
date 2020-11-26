@@ -8,7 +8,9 @@ import path from 'path';
 import fs from 'fs';
 import util from 'util';
 import colors from 'colors';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
+import useExpressWs from "express-ws";
+import watch from 'node-watch';
 import serveStatic from 'serve-static';
 import config from './util/config';
 import browser from './util/browser';
@@ -20,56 +22,49 @@ export interface Options {
   silent?: boolean; // invoque browser or run silently
 }
 
-// swagger-editor must be served from root
-const SWAGGER_EDITOR_SERVE_PATH = '/';
-// swagger-editor expects to GET the file here
-const SWAGGER_EDITOR_LOAD_PATH = '/oas/spec';
-// swagger-editor PUTs the file back here
-const SWAGGER_EDITOR_SAVE_PATH = '/oas/spec';
+// swagger-viewer must be served from root
+const SWAGGER_BROWSER_SERVE_PATH = '/';
+// swagger-viewer expects to GET the file here
+const SWAGGER_BROWSER_LOAD_PATH = '/oas/spec';
 // map dir for UI
-const SWAGGER_EDITOR_UI_PATH = '/swagger-editor';
-// swagger-editor GETs the configuration files
-const SWAGGER_EDITOR_CONFIG_PATH = '/config/defaults.json';
+const SWAGGER_BROWSER_UI_PATH = '/swagger-ui';
+// swagger-viewer GETs the configuration files
+const SWAGGER_BROWSER_CONFIG_PATH = '/config/defaults.json';
 
 export const edit = (options: Options): void => {
   if (!fs.existsSync(options.file)) {
     console.error(colors.red(`The OpenAPI file provided ${options.file} does not exist.`));
     return;
   }
-  const app = require('connect')();
-  // save the file from swagger-editor
-  app.use(SWAGGER_EDITOR_SAVE_PATH, (req: express.Request, res: express.Response, next: express.NextFunction) => {
-    if (req.method !== 'PUT') { return next(); }
+  const app = express();
+  const expressWs = useExpressWs(app);
+  expressWs.app.ws('/hot-reload', (ws, req) => {});
 
-    const stream = fs.createWriteStream(options.file);
-    req.pipe(stream);
+  // retrieve the project swagger file for the swagger-viewer
+  app.use(SWAGGER_BROWSER_LOAD_PATH, serveStatic(options.file));
 
-    stream.on('finish', () => {
-      res.end('ok');
-    });
-  });
-
-  // retrieve the project swagger file for the swagger-editor
-  app.use(SWAGGER_EDITOR_LOAD_PATH, serveStatic(options.file));
-
-  app.use(SWAGGER_EDITOR_CONFIG_PATH, (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  app.use(SWAGGER_BROWSER_CONFIG_PATH, (req: Request, res: Response, next: NextFunction) => {
     if (req.method !== 'GET') { return next(); }
     res.end(JSON.stringify(config.editorConfig));
   });
 
-  // load swagger-editor with use custom index
-  app.use(SWAGGER_EDITOR_SERVE_PATH, serveStatic(path.resolve(__dirname, '..', 'src/')));
-  app.use(SWAGGER_EDITOR_UI_PATH, serveStatic(config.editorPath));
+  // load swagger-viewer with use custom index
+  app.use(SWAGGER_BROWSER_SERVE_PATH, serveStatic(path.resolve(__dirname, '..', 'src/')));
+  app.use(SWAGGER_BROWSER_UI_PATH, serveStatic(config.editorPath));
 
-  // start editor in browser //
-  const http = require('http');
-  const server = http.createServer(app);
+  watch(options.file, { delay: 1000 }, (event, name) => {
+    console.log(`${name} changed`, event);
+    expressWs.getWss().clients.forEach((c: any) => {
+      c.send('reload');
+    });
+  });
+
+  // start viewer in browser //
   const hostname = options.host || '127.0.0.1';
-  let port = options.port || 0;
+  let port = Number(options.port || 30303);
   let editorUrl;
 
-  server.listen(port, hostname, () => {
-    port = server.address().port;
+  app.listen(port, hostname, (server) => {
     editorUrl = util.format('http://%s:%d/?url=/oas/spec', hostname, port);
     const editApiUrl = util.format('http://%s:%d/oas/spec', hostname, port);
     const dontKillMessage = '- Do not terminate this process or close this window until finished editing -';

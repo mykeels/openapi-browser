@@ -17,7 +17,7 @@ interface Config {
 const config: Config = {
   name: 'OpenAPI Swagger Editor',
   rootDir: path.resolve(__dirname, '../../'),
-  editorPath: require.resolve('swagger-editor-dist'),
+  editorPath: require.resolve('swagger-ui-dist'),
   userHome: process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'],
   debug: !!process.env.DEBUG,
   nodeModules: '',

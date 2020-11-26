@@ -1,15 +1,16 @@
-# openapi-editor
+# openapi-browser
 
-The **OpenAPI Editor** is a wrapper package built around the [Swagger Editor](https://github.com/swagger-api/swagger-editor) tool which allows you to edit [Open API specifications](https://github.com/OAI/OpenAPI-Specification) in YAML inside your browser and preview its documentations in real time.
+The **OpenAPI Browser** is a wrapper package built around the [Swagger UI](https://github.com/swagger-api/swagger-ui) tool which allows you to edit [Open API specifications](https://github.com/OAI/OpenAPI-Specification) in YAML inside your browser and preview its documentations in real time.
 
 The OpenAPI Specification is a community-driven open specification within the [OpenAPI Initiative](https://www.openapis.org/), a Linux Foundation Collaborative Project.
 
-**OpenAPI Editor** is built with [swagger-editor-dist](https://www.npmjs.com/package/swagger-editor-dist) which is a dependency-free module that includes everything you need to serve Swagger Editor in a project.
+**OpenAPI Browser** is built with [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist) which is a dependency-free module that includes everything you need to serve Swagger UI in a project.
 
 ## Features
 
+* Hot reload.
 * Runs as a stand-alone web application in a port of your choice.
-* Edit, validate and save your OpenAPI yaml file describing your project API.
+* View your OpenAPI yaml/json file describing your project API.
 
 ## Getting Started
 
@@ -19,28 +20,28 @@ In a typical workflow of building an API based on the [Open API specifications](
 
 In a new or existing folder containing your project:
 
-```npm install openapi-editor```
+```npm install openapi-browser```
 
 ### Usage
 
-By default ```openapi-editor``` will run in a dynamically assigned port and will attempt to find an OpenAPI yaml file in the default path ```src/api/v1/api.yaml```
+By default ```openapi-browser``` will run in port 30303 and will attempt to find an OpenAPI yaml file in the default path ```src/api/v1/api.yaml```
 
 You can add an entry to the "scripts" section in package.json:
 
 ```json
 "scripts": {
-  "api:edit": "openapi-editor --file ./src/api/v1/api.yaml --port 10021"
+  "api:edit": "openapi-browser --file ./src/api/v1/api.yaml --port 10021"
 }
 ```
 
 You can also run it from the command line using ```npx```
 
-```npx openapi-editor --file ./src/api/v1/api.yaml --port 10021```
+```npx openapi-browser --file ./src/api/v1/api.yaml --port 10021```
 
 Or in JavaScript by importing the module
 
 ```javascript
-const openApiEditor = require('openapi-editor');
+const openApiBrowser = require('openapi-browser');
 
 const options = {
   file: './src/api/v1/api.yaml', // specify path as string or fully resolved path
@@ -48,7 +49,7 @@ const options = {
   silent: false, // invoque browser or run silently
 };
 
-openApiEditor.edit(options);
+openApiBrowser.edit(options);
 ```
 
 ## API
@@ -71,7 +72,7 @@ This project is licensed under the MIT License
 
 ## Development Setup
 
-Clone this repo ```git clone https://github.com/Codermar/openapi-editor```
+Clone this repo ```git clone https://github.com/mykeels/openapi-browser```
 
 ```npm install```
 
@@ -84,3 +85,7 @@ Clone this repo ```git clone https://github.com/Codermar/openapi-editor```
 ## Contributing
 
 Keep it simple. Keep it minimal.
+
+## Credits
+
+Huge props to [openapi-editor](https://github.com/Codermar/openapi-editor). 🙌
