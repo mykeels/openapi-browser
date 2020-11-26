@@ -11,7 +11,7 @@
   "scripts": {
     "build:watch": "tsc --watch",
     "build": "tsc",
-    "ci": "npm run lint && npm run build && npm run test:coverage",
+    "ci": "npm run lint && npm run build && npm run test",
     "docs": "typedoc --out docs src",
     "gh-pages": "rimraf docs && npm run docs && gh-pages -d docs",
     "lint": "tslint --project \"./tsconfig.json\"",
@@ -20,7 +20,6 @@
     "preversion": "npm run ci",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "test": "nyc mocha -r ts-node/register **/*.spec.ts",
-    "test:coverage": "TS_NODE_COMPILER_OPTIONS='{\"target\":\"es6\"}' nyc mocha **/*.spec.ts",
     "test:watch": "mocha -r ts-node/register src/**/*.spec.ts --watch --watch-extensions ts"
   },
   "keywords": [
@@ -67,6 +66,7 @@
     "@types/node": "^13.9.5",
     "chai": "^4.2.0",
     "coveralls": "^3.0.11",
+    "cross-env": "^7.0.2",
     "gh-pages": "^2.2.0",
     "mocha": "^7.1.1",
     "nyc": "^15.0.0",

@@ -9,7 +9,7 @@ import fs from 'fs';
 import util from 'util';
 import colors from 'colors';
 import express, { Request, Response, NextFunction } from 'express';
-import useExpressWs from "express-ws";
+import useExpressWs from 'express-ws';
 import watch from 'node-watch';
 import serveStatic from 'serve-static';
 import config from './util/config';
@@ -38,7 +38,9 @@ export const edit = (options: Options): void => {
   }
   const app = express();
   const expressWs = useExpressWs(app);
-  expressWs.app.ws('/hot-reload', (ws, req) => {});
+  expressWs.app.ws('/hot-reload', (ws, req) => {
+    console.log('WS opened!');
+  });
 
   // retrieve the project swagger file for the swagger-viewer
   app.use(SWAGGER_BROWSER_LOAD_PATH, serveStatic(options.file));
@@ -61,7 +63,7 @@ export const edit = (options: Options): void => {
 
   // start viewer in browser //
   const hostname = options.host || '127.0.0.1';
-  let port = Number(options.port || 30303);
+  const port = Number(options.port || 30303);
   let editorUrl;
 
   app.listen(port, hostname, (server) => {
