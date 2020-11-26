@@ -1,12 +1,12 @@
 {
   "name": "openapi-browser",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "OpenAPI Browser is a wrapper for Swagger-Editor 3.x",
   "author": "Michael I. <mykehell123@gmail.com>",
   "main": "dist/editor.js",
   "types": "dist/editor.d.ts",
   "bin": {
-    "openapi-editor": "./dist/index.js"
+    "openapi-browser": "./dist/index.js"
   },
   "scripts": {
     "build:watch": "tsc --watch",
