@@ -1,70 +1,39 @@
 # openapi-browser
 
-The **OpenAPI Browser** is a wrapper package built around the [Swagger UI](https://github.com/swagger-api/swagger-ui) tool which allows you to edit [Open API specifications](https://github.com/OAI/OpenAPI-Specification) in YAML inside your browser and preview its documentations in real time.
+Edit your [Open API specification](https://github.com/OAI/OpenAPI-Specification) in your text editor and view the rendered spec in real time (hot reload) in your browser.
 
-The OpenAPI Specification is a community-driven open specification within the [OpenAPI Initiative](https://www.openapis.org/), a Linux Foundation Collaborative Project.
+openapi-browser renders your spec in [Swagger UI](https://github.com/swagger-api/swagger-ui), provided by [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist).
 
-**OpenAPI Browser** is built with [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist) which is a dependency-free module that includes everything you need to serve Swagger UI in a project.
-
-## Features
-
-* Hot reload.
-* Runs as a stand-alone web application in a port of your choice.
-* View your OpenAPI yaml/json file describing your project API.
-
-## Getting Started
-
-In a typical workflow of building an API based on the [Open API specifications](https://github.com/OAI/OpenAPI-Specification), you would design and model your API, write the implementation code, test it and maintain it.
-
-### Install
+## Installation
 
 In a new or existing folder containing your project:
 
-```npm install openapi-browser```
-
-### Usage
-
-By default ```openapi-browser``` will run in port 30303 and will attempt to find an OpenAPI yaml file in the default path ```src/api/v1/api.yaml```
-
-You can add an entry to the "scripts" section in package.json:
-
-```json
-"scripts": {
-  "api:edit": "openapi-browser --file ./src/api/v1/api.yaml --port 10021"
-}
+```
+npm install openapi-browser
 ```
 
-You can also run it from the command line using ```npx```
+### Usage
+Start openapi-browser, pointing it to your spec file:
+```
+npx openapi-browser --file ./openapi.yaml
+```
 
-```npx openapi-browser --file ./src/api/v1/api.yaml --port 10021```
+This will open your browser to localhost:30303 with your spec loaded into Swagger UI. You can override the port by passing in a `--port`, and you can pass the `--silent` option if you don't want the browser window to be automatically opened.
 
-Or in JavaScript by importing the module
+
+You can also call the package from JavaScript:
 
 ```javascript
 const openApiBrowser = require('openapi-browser');
 
 const options = {
-  file: './src/api/v1/api.yaml', // specify path as string or fully resolved path
-  port: 10021, // specify port or omit for random port usage
+  file: './src/api/v1/api.yaml', // specify relative or absolute path
+  port: 10021, // specify port or omit to use default (30303)
   silent: false, // invoque browser or run silently
 };
 
 openApiBrowser.edit(options);
 ```
-
-## API
-
-### ```--file [optional]```
-
-The OpenAPI specification File to edit. Defaults to ```src/api/v1/api.yaml```
-
-### ```--port [optional]```
-
-Optional port to run. Defaults to 0 or dynamically assigned port.
-
-### ```--silent [optional true/false]```
-
-Automatically opens default browser. Defaults to true.
 
 ## Licence
 
@@ -72,15 +41,13 @@ This project is licensed under the MIT License
 
 ## Development Setup
 
-Clone this repo ```git clone https://github.com/mykeels/openapi-browser```
+- Clone this repo: `git clone https://github.com/mykeels/openapi-browser`.
 
-```npm install```
+- Install dependencies: `npm install`
 
-```npm run test:watch``` To run tests in watch mode.
+- `npm run build` or `npm run build:watch` to build the project.
 
-```npm run build``` or ```npm run build:watch``` To build the project.
-
-  `npm test` to run the tests.
+- `npm test` to run tests (`npm run test:watch` to run in watch mode).
 
 ## Contributing
 
