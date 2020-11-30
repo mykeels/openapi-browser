@@ -2,7 +2,7 @@
 
 Edit your [Open API specification](https://github.com/OAI/OpenAPI-Specification) in your text editor and view the rendered spec in real time (hot reload) in your browser.
 
-openapi-browser renders your spec in [Swagger UI](https://github.com/swagger-api/swagge-ui), provided by [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist).
+openapi-browser renders your spec in [Swagger UI](https://github.com/swagger-api/swagger-ui), provided by [swagger-ui-dist](https://www.npmjs.com/package/swagger-ui-dist).
 
 ## Installation
 
