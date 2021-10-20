@@ -31,6 +31,9 @@ const SWAGGER_BROWSER_UI_PATH = '/swagger-ui';
 // swagger-viewer GETs the configuration files
 const SWAGGER_BROWSER_CONFIG_PATH = '/config/defaults.json';
 
+// swagger redirect for oauth2
+const SWAGGER_BROWSER_REDIRECT_PATH= '/oauth2-redirect.html';
+
 export const edit = (options: Options): void => {
   if (!fs.existsSync(options.file)) {
     console.error(colors.red(`The OpenAPI file provided ${options.file} does not exist.`));
@@ -48,6 +51,11 @@ export const edit = (options: Options): void => {
   app.use(SWAGGER_BROWSER_CONFIG_PATH, (req: Request, res: Response, next: NextFunction) => {
     if (req.method !== 'GET') { return next(); }
     res.end(JSON.stringify(config.editorConfig));
+  });
+
+  //oauth2 redirection
+  app.get(SWAGGER_BROWSER_REDIRECT_PATH, (req, res) => {
+    res.sendFile(path.join(config.editorPath ,SWAGGER_BROWSER_REDIRECT_PATH));
   });
 
   // load swagger-viewer with use custom index
